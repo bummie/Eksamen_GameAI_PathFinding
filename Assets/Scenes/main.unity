@@ -228,8 +228,10 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1233632862}
+  - component: {fileID: 1233632863}
+  - component: {fileID: 1233632864}
   m_Layer: 0
-  m_Name: MapEditor
+  m_Name: PathFindingHandler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -248,6 +250,29 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1233632863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1233632861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15e5c87f38c22794c99db6dae6ae7f27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Obstacle: {fileID: 1898302223369932, guid: adf6a756b99718340bd8b1fab551eab0, type: 2}
+--- !u!114 &1233632864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1233632861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79daf01e9adb707448b8641b52c25301, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1280112289
 GameObject:
   m_ObjectHideFlags: 0
