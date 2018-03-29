@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class MapEditor : MonoBehaviour
 {
-
+	private enum EditorMode{AddTile, RemoveTile, Move};
 	private TileHandler _tileHandler;
 
 	public GameObject Obstacle;
 	public GameObject ObstacleParent;
 
+	private EditorMode _mode;
 	private Plane _mapPlane;
 	private Ray _screenToWorldRay;
 	private float _distance;
@@ -18,6 +19,8 @@ public class MapEditor : MonoBehaviour
 	{
 		_mapPlane = new Plane(Vector3.up, Vector3.zero);
 		_tileHandler = GetComponent<TileHandler>();
+
+		_mode = EditorMode.AddTile;
 	}
 	
 	void Update () 
@@ -25,31 +28,56 @@ public class MapEditor : MonoBehaviour
 		//Left mouse button clicked
         if (Input.GetMouseButton(0))
 		{
-			EditObstacle();
+			switch(_mode)
+			{
+				case EditorMode.AddTile:
+					AddObstacle();
+				break;
+
+				case EditorMode.RemoveTile:
+					RemoveObstacle();
+				break;
+
+				case EditorMode.Move:
+
+				break;
+				
+			}
+		}
+
+		if (Input.GetMouseButtonDown(1))
+		{
+			SwapMode();
+			Debug.Log("Swap");
 		}
 	}
 
 	/// <summary>
-	/// Adds or removes obstacle from tile where mouse clicked
+	/// Adds obstacle from tile where mouse clicked
 	/// </summary>
-	private void EditObstacle()
+	private void AddObstacle()
 	{
 		Vector2 tile = MousePositionToTile();
 		
-		if(tile == _lastEditedTile)
+		if(_tileHandler.IsTileOccupied(tile))
 		{
 			return;
 		}
 
+		_tileHandler.AddTile(tile, CreateObstacle(tile));
+	}
+
+	/// <summary>
+	/// Removes obstacle from tile where mouse clicked
+	/// </summary>
+	private void RemoveObstacle()
+	{
+		Vector2 tile = MousePositionToTile();
+
 		if(_tileHandler.IsTileOccupied(tile))
 		{
 			_tileHandler.RemoveTile(tile);
-		}else
-		{	
-			_tileHandler.AddTile(tile, CreateObstacle(tile));
 		}
-
-		_lastEditedTile = tile;
 	}
 
 	/// <summary>
@@ -78,5 +106,18 @@ public class MapEditor : MonoBehaviour
 		obstacle.transform.SetParent(ObstacleParent.transform);
 		obstacle.name = "Obstacle";
 		return obstacle;
+	}
+
+	/// <summary>
+	/// Changes the editormode to the next in queue
+	/// </summary>
+	private void SwapMode()
+	{
+		_mode++;
+
+		if(_mode > EditorMode.Move)
+		{
+			_mode = EditorMode.AddTile;
+		}
 	}
 }

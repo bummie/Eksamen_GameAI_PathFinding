@@ -113,48 +113,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &122612268
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 1803187907}
-    m_Modifications:
-    - target: {fileID: 4484689556238636, guid: adf6a756b99718340bd8b1fab551eab0, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 4484689556238636, guid: adf6a756b99718340bd8b1fab551eab0, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: -0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4484689556238636, guid: adf6a756b99718340bd8b1fab551eab0, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 4484689556238636, guid: adf6a756b99718340bd8b1fab551eab0, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4484689556238636, guid: adf6a756b99718340bd8b1fab551eab0, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4484689556238636, guid: adf6a756b99718340bd8b1fab551eab0, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4484689556238636, guid: adf6a756b99718340bd8b1fab551eab0, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4484689556238636, guid: adf6a756b99718340bd8b1fab551eab0, type: 2}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: adf6a756b99718340bd8b1fab551eab0, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1 &546370807
 GameObject:
   m_ObjectHideFlags: 0
@@ -262,6 +220,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Obstacle: {fileID: 1898302223369932, guid: adf6a756b99718340bd8b1fab551eab0, type: 2}
+  ObstacleParent: {fileID: 1803187906}
 --- !u!114 &1233632864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -433,11 +392,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1757464694 stripped
-Transform:
-  m_PrefabParentObject: {fileID: 4484689556238636, guid: adf6a756b99718340bd8b1fab551eab0,
-    type: 2}
-  m_PrefabInternal: {fileID: 122612268}
 --- !u!1 &1788999188
 GameObject:
   m_ObjectHideFlags: 0
@@ -543,8 +497,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1757464694}
+  m_Children: []
   m_Father: {fileID: 1682580819}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
