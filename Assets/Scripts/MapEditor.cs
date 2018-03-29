@@ -7,48 +7,75 @@ public class MapEditor : MonoBehaviour
 	private enum EditorMode{AddTile, RemoveTile, Move};
 	private TileHandler _tileHandler;
 
+
+	#region Public Editor
+	public GameObject Player;
+	public GameObject Goal;
 	public GameObject Obstacle;
 	public GameObject ObstacleParent;
+	
+	#endregion
 
+	#region private fields
 	private EditorMode _mode;
 	private Plane _mapPlane;
 	private Ray _screenToWorldRay;
 	private float _distance;
-	private Vector2 _lastEditedTile = Vector2.zero;
+	private bool _isMoving = false;
+	#endregion
 	void Start () 
 	{
 		_mapPlane = new Plane(Vector3.up, Vector3.zero);
 		_tileHandler = GetComponent<TileHandler>();
 
 		_mode = EditorMode.AddTile;
+
+		// Add player and goal as occupied tiles
+		_tileHandler.AddTile(_tileHandler.ClosestTile(Player.transform.position), Player);
+		_tileHandler.AddTile(_tileHandler.ClosestTile(Goal.transform.position), Goal);
 	}
 	
 	void Update () 
 	{
-		//Left mouse button clicked
+		if (Input.GetMouseButtonDown(0))
+		{
+			// If in move mode
+			// Move tile we are at to tile we end up at
+		}
+
+		//Left mouse button held down
         if (Input.GetMouseButton(0))
 		{
-			switch(_mode)
+			if(!_isMoving)
 			{
-				case EditorMode.AddTile:
-					AddObstacle();
-				break;
+				switch(_mode)
+				{
+					case EditorMode.AddTile:
+						AddObstacle();
+					break;
 
-				case EditorMode.RemoveTile:
-					RemoveObstacle();
-				break;
+					case EditorMode.RemoveTile:
+						RemoveObstacle();
+					break;
 
-				case EditorMode.Move:
+					case EditorMode.Move:
 
-				break;
-				
+					break;
+				}
 			}
+		}
+
+		if (Input.GetMouseButtonUp(0))
+		{
+			if(!_isMoving){ return; }
+
+			//Move tile we started at to the tile we ended up at here
 		}
 
 		if (Input.GetMouseButtonDown(1))
 		{
 			SwapMode();
-			Debug.Log("Swap");
+			Debug.Log("Mode: " + _mode.ToString());
 		}
 	}
 
