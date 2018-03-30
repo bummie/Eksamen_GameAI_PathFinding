@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class TileHandler : MonoBehaviour 
 {
-
 	public Hashtable OccupiedTiles { get; private set; }
 	void Start () 
 	{

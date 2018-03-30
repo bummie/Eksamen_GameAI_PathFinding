@@ -7,7 +7,6 @@ public class MapEditor : MonoBehaviour
 	private enum EditorMode{AddTile, RemoveTile, Move};
 	private TileHandler _tileHandler;
 
-
 	#region Public Editor
 	public GameObject Player;
 	public GameObject Goal;
@@ -22,6 +21,7 @@ public class MapEditor : MonoBehaviour
 	private Ray _screenToWorldRay;
 	private float _distance;
 	private bool _isMoving = false;
+	private GameObject _movingObject = null;
 	#endregion
 	void Start () 
 	{
@@ -29,49 +29,54 @@ public class MapEditor : MonoBehaviour
 		_tileHandler = GetComponent<TileHandler>();
 
 		_mode = EditorMode.AddTile;
-
-		// Add player and goal as occupied tiles
-		_tileHandler.AddTile(_tileHandler.ClosestTile(Player.transform.position), Player);
-		_tileHandler.AddTile(_tileHandler.ClosestTile(Goal.transform.position), Goal);
 	}
 	
 	void Update () 
 	{
 		if (Input.GetMouseButtonDown(0))
-		{
-			// If in move mode
-			// Move tile we are at to tile we end up at
+		{	
+			if(_mode == EditorMode.Move)
+			{
+				GameObject clickedObject = FetchClickedObject();
+				
+				if(clickedObject.tag == "Moveable")
+				{
+					_isMoving = true;
+					_movingObject = clickedObject;
+				}
+			}
 		}
 
 		//Left mouse button held down
         if (Input.GetMouseButton(0))
 		{
-			if(!_isMoving)
+			switch(_mode)
 			{
-				switch(_mode)
-				{
-					case EditorMode.AddTile:
-						AddObstacle();
-					break;
+				case EditorMode.AddTile:
+					AddObstacle();
+				break;
 
-					case EditorMode.RemoveTile:
-						RemoveObstacle();
-					break;
+				case EditorMode.RemoveTile:
+					RemoveObstacle();
+				break;
 
-					case EditorMode.Move:
-
-					break;
-				}
+				case EditorMode.Move:
+					if(_isMoving)
+					{	
+						Vector2 tilePosition = MousePositionToTile();
+						_movingObject.transform.position = new Vector3(tilePosition.x, -.5f, tilePosition.y);
+					}
+				break;
 			}
 		}
 
 		if (Input.GetMouseButtonUp(0))
 		{
-			if(!_isMoving){ return; }
-
-			//Move tile we started at to the tile we ended up at here
+			_isMoving = false;
+			_movingObject = null;
 		}
 
+		// Right click
 		if (Input.GetMouseButtonDown(1))
 		{
 			SwapMode();
@@ -86,11 +91,14 @@ public class MapEditor : MonoBehaviour
 	{
 		Vector2 tile = MousePositionToTile();
 		
+		// If tile occupied by obstacle already
 		if(_tileHandler.IsTileOccupied(tile))
-		{
-			return;
-		}
+		{ return; }
 
+		// If space is occupied by player og goal
+		if((_tileHandler.ClosestTile(Player.transform.position) == tile) || (_tileHandler.ClosestTile(Goal.transform.position) == tile))
+		{ return; }
+		
 		_tileHandler.AddTile(tile, CreateObstacle(tile));
 	}
 
@@ -121,6 +129,23 @@ public class MapEditor : MonoBehaviour
 			return _tileHandler.ClosestTile(position);
 		}
 		return Vector2.zero; //TODO: Throw exception
+	}
+
+	/// <summary>
+	/// Returns the object clicked on
+	/// </summary>
+	/// <returns></returns>
+	private GameObject FetchClickedObject()
+	{
+		RaycastHit hitObject; 
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); 
+		
+		if ( Physics.Raycast (ray, out hitObject, 100.0f))
+		{
+			return hitObject.transform.gameObject;
+		}
+
+		return null;
 	}
 
 	/// <summary>
