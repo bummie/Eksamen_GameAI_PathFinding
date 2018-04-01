@@ -24,6 +24,7 @@ public class Node
 	/// <returns></returns>
 	public override string ToString()
 	{
-		return Tile.ToString() + ": " + "Parent: " + Parent.Tile.ToString() + " MoveCost: " + MoveCost + " HeuristicCost: " + HeuristicCost + " TotalCost: " + TotalScore;
+		string parentTile = Parent == null ? "Null" : Parent.Tile.ToString();
+		return Tile + ": " + "Parent: " + parentTile + " MoveCost: " + MoveCost + " HeuristicCost: " + HeuristicCost + " TotalCost: " + TotalScore;
 	}
 }

@@ -77,6 +77,12 @@ public class PathFinding : MonoBehaviour
 				}
 			}
 		}
+
+		for(int i = 0; i < _innerNodes.Count; i++)
+		{
+			Debug.Log((Node)_innerNodes[i]);
+		}
+
 		return _innerNodes.ToArray(typeof(Node)) as Node[];
 	}
 
