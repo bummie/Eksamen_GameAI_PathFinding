@@ -19,6 +19,19 @@ public class PathFinding : MonoBehaviour
 		_tileHandler = GetComponent<TileHandler>();
 	}
 
+	void Update()
+	{
+		if(Input.GetKeyDown(KeyCode.Space))
+		{
+			Node[] path = CalculatePath();
+			Debug.Log(path.Length);
+			foreach(Node n in path)
+			{
+				Debug.Log(n.ToString());
+			}
+		}
+	}
+
 	/// <summary>
 	/// Calcuates path from player to goal
 	/// Returns the path as an array of Nodes
@@ -47,11 +60,42 @@ public class PathFinding : MonoBehaviour
 			if(currentNode.Tile == goalTile)
 			{
 				// TODO: We've found the path we're lookin for boys
+				Debug.Log("Found path: " + _innerNodes.Count);
+				
+				break;
+			}
+
+			Node[] currentNodeNeigbours = FetchNeighbours(currentNode);
+			foreach(Node neighbour in currentNodeNeigbours)
+			{
+				if(IsAlreadyOuterNode(neighbour))
+				{
+
+				}else
+				{
+					_outerNodes.Add(neighbour);
+				}
 			}
 		}
-		return null;
+		return _innerNodes.ToArray(typeof(Node)) as Node[];
 	}
 
+	/// <summary>
+	/// Returns whether the given Node is
+	/// in the OuterNodeArraylist or not
+	/// </summary>
+	/// <param name="node"></param>
+	/// <returns></returns>
+	private bool IsAlreadyOuterNode(Node node)
+	{
+		foreach(Node n in _outerNodes)
+		{
+			if(n.Tile == node.Tile)
+			{ return true; }
+		}
+
+		return false;
+	}
 	/// <summary>
 	/// Takes a node and finds its neighbouring nodes that are valid
 	/// </summary>
@@ -163,7 +207,7 @@ public class PathFinding : MonoBehaviour
 		{ return false; }
 
 		// Is node in outerNodelist?
-		foreach(Node n in _outerNodes)
+		foreach(Node n in _innerNodes)
 		{
 			if(tile == n.Tile)
 			{ return false; }
@@ -181,7 +225,7 @@ public class PathFinding : MonoBehaviour
 	{
 		int bestNodeIndex = 0;
 		float bestNodeScore = -1;
-		for(int i = 0; i < nodeList.Count - 1)
+		for(int i = 0; i < nodeList.Count - 1; i++)
 		{				
 			Node listNode = nodeList[i] as Node;
 
