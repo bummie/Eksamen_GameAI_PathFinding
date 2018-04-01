@@ -60,7 +60,7 @@ public class PlayerMove : MonoBehaviour {
 	/// <summary>
 	/// Draw path
 	/// </summary>
-	void OnDrawGizmosSelected() 
+	void OnDrawGizmos() 
 	{
         if (MovePath != null)
 		{
