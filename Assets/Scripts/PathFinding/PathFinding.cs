@@ -24,11 +24,9 @@ public class PathFinding : MonoBehaviour
 		if(Input.GetKeyDown(KeyCode.Space))
 		{
 			Node[] path = CalculatePath();
-			Debug.Log(path.Length);
-			foreach(Node n in path)
-			{
-				Debug.Log(n.ToString());
-			}
+		
+			_mapEditor.Player.GetComponent<PlayerMove>().MovePath = path;
+			_mapEditor.Player.GetComponent<PlayerMove>().ShouldMove = true;
 		}
 	}
 
@@ -77,14 +75,35 @@ public class PathFinding : MonoBehaviour
 				}
 			}
 		}
+		
+		//TODO: Trekke ut til egen metode
+		List<Node> bestPath  = new List<Node>();
 
-		for(int i = 0; i < _innerNodes.Count; i++)
+		bool foundStartNode = false;
+		Node lastAdded = null;
+		while(!foundStartNode)
 		{
-			Debug.Log((Node)_innerNodes[i]);
-		}
+			if(lastAdded == null)
+			{
+				lastAdded = _innerNodes[_innerNodes.Count - 1] as Node;
+				bestPath.Add(lastAdded);
+				continue;
+			}
 
-		return _innerNodes.ToArray(typeof(Node)) as Node[];
+			if(lastAdded.Parent != null)
+			{
+				lastAdded = lastAdded.Parent;
+				bestPath.Add(lastAdded);
+			}else
+			{
+				foundStartNode = true;
+			}
+		}
+		
+		bestPath.Reverse();
+		return bestPath.ToArray();
 	}
+
 
 	/// <summary>
 	/// Returns whether the given Node is
