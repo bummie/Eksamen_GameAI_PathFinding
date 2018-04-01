@@ -43,6 +43,7 @@ public class MapEditor : MonoBehaviour
 				{
 					_isMoving = true;
 					_movingObject = clickedObject;
+					Player.GetComponent<PlayerMove>().ShouldMove = false;
 				}
 			}
 		}
@@ -68,6 +69,8 @@ public class MapEditor : MonoBehaviour
 					}
 				break;
 			}
+			
+			Player.GetComponent<PlayerMove>().ShouldMove = false;
 		}
 
 		if (Input.GetMouseButtonUp(0))

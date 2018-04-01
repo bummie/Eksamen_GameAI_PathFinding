@@ -6,6 +6,7 @@ public class PathFinding : MonoBehaviour
 {
 	private const float MOVECOST = 1;
 	private const float MOVECOST_DIAGONAL = 1.4f;
+	private const bool CUT_CORNERS = true;
 
 	private MapEditor _mapEditor;
 	private TileHandler _tileHandler;
@@ -57,10 +58,7 @@ public class PathFinding : MonoBehaviour
 			
 			if(currentNode.Tile == goalTile)
 			{
-				// TODO: We've found the path we're lookin for boys
-				Debug.Log("Found path: " + _innerNodes.Count);
-				
-				break;
+				break; // Found path
 			}
 
 			Node[] currentNodeNeigbours = FetchNeighbours(currentNode);
@@ -99,8 +97,9 @@ public class PathFinding : MonoBehaviour
 				foundStartNode = true;
 			}
 		}
-		
+
 		bestPath.Reverse();
+		Debug.Log("Found path: " + bestPath.Count);
 		return bestPath.ToArray();
 	}
 
@@ -137,7 +136,7 @@ public class PathFinding : MonoBehaviour
 		neighbourTile.x -= 1;
 		neighbourTile.y += 1;
 		
-		if(IsTileValid(neighbourTile))
+		if(IsTileValid(neighbourTile) && CUT_CORNERS)
 		{
 			neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateManhatten(neighbourTile));
 			neighbourList.Add(neighbourNode);
@@ -158,7 +157,7 @@ public class PathFinding : MonoBehaviour
 		neighbourTile.x += 1;
 		neighbourTile.y += 1;
 		
-		if(IsTileValid(neighbourTile))
+		if(IsTileValid(neighbourTile) && CUT_CORNERS)
 		{
 			neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateManhatten(neighbourTile));
 			neighbourList.Add(neighbourNode);
@@ -189,7 +188,7 @@ public class PathFinding : MonoBehaviour
 		neighbourTile.x -= 1;
 		neighbourTile.y -= 1;
 		
-		if(IsTileValid(neighbourTile))
+		if(IsTileValid(neighbourTile) && CUT_CORNERS)
 		{
 			neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateManhatten(neighbourTile));
 			neighbourList.Add(neighbourNode);
@@ -210,7 +209,7 @@ public class PathFinding : MonoBehaviour
 		neighbourTile.x += 1;
 		neighbourTile.y -= 1;
 		
-		if(IsTileValid(neighbourTile))
+		if(IsTileValid(neighbourTile) && CUT_CORNERS)
 		{
 			neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateManhatten(neighbourTile));
 			neighbourList.Add(neighbourNode);

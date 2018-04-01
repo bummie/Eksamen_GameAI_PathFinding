@@ -5,7 +5,21 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour {
 
 	public bool ShouldMove { get; set; }
-	public Node[] MovePath { get; set; }
+
+	private Node[] _movePath;
+	public Node[] MovePath
+	{
+		get
+		{
+			return _movePath;
+		}
+
+		set
+		{
+			_movePath = value;
+			_currentPathIndex = 0;
+		} 
+	}
 	private int _currentPathIndex = 0;
 
 	public float PlayerSpeed = 1f;
@@ -14,6 +28,7 @@ public class PlayerMove : MonoBehaviour {
 	void Start () 
 	{
 		ShouldMove = false;
+		MovePath = null;
 	}
 	
 	void Update ()
@@ -29,7 +44,7 @@ public class PlayerMove : MonoBehaviour {
 		if(ShouldMove)
 		{
 			if(_currentPathIndex == MovePath.Length)
-			{ ShouldMove = false;}
+			{ ShouldMove = false; return; }
 
 			_targetPosition = new Vector3(MovePath[_currentPathIndex].Tile.x, -.5f, MovePath[_currentPathIndex].Tile.y);
 
@@ -41,4 +56,19 @@ public class PlayerMove : MonoBehaviour {
 			}
     	}
 	}
+
+	/// <summary>
+	/// Draw path
+	/// </summary>
+	void OnDrawGizmosSelected() 
+	{
+        if (MovePath != null)
+		{
+            Gizmos.color = Color.cyan;
+			for(int i = 0; i < MovePath.Length-1; i++)
+			{
+            	Gizmos.DrawLine(new Vector3(MovePath[i].Tile.x, 1f, MovePath[i].Tile.y), new Vector3(MovePath[i+1].Tile.x, 1f, MovePath[i+1].Tile.y));
+			}
+        }
+    }
 }
