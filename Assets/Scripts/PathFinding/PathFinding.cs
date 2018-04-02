@@ -6,8 +6,7 @@ public class PathFinding : MonoBehaviour
 {
 	private const float MOVECOST = 1;
 	private const float MOVECOST_DIAGONAL = 1.4f;
-	private const bool CUT_CORNERS = true;
-
+	public bool CutCorners = true;
 	private MapEditor _mapEditor;
 	private TileHandler _tileHandler;
 
@@ -136,10 +135,14 @@ public class PathFinding : MonoBehaviour
 		neighbourTile.x -= 1;
 		neighbourTile.y += 1;
 		
-		if(IsTileValid(neighbourTile) && CUT_CORNERS)
+		if(IsTileValid(neighbourTile) && CutCorners)
 		{
-			neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateManhatten(neighbourTile));
-			neighbourList.Add(neighbourNode);
+			// Check if sides are valid so the player cant squeese through
+			if(IsTileValid(new Vector2(node.Tile.x - 1, node.Tile.y)) && IsTileValid(new Vector2(node.Tile.x, node.Tile.y + 1)))
+			{
+				neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateManhatten(neighbourTile));
+				neighbourList.Add(neighbourNode);
+			}
 		}
 
 		// [ 0, 1 ]
@@ -157,10 +160,13 @@ public class PathFinding : MonoBehaviour
 		neighbourTile.x += 1;
 		neighbourTile.y += 1;
 		
-		if(IsTileValid(neighbourTile) && CUT_CORNERS)
+		if(IsTileValid(neighbourTile) && CutCorners)
 		{
-			neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateManhatten(neighbourTile));
-			neighbourList.Add(neighbourNode);
+			if(IsTileValid(new Vector2(node.Tile.x, node.Tile.y + 1)) && IsTileValid(new Vector2(node.Tile.x + 1, node.Tile.y)))
+			{
+				neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateManhatten(neighbourTile));
+				neighbourList.Add(neighbourNode);
+			}
 		}
 
 		// [ -1, 0 ]
@@ -188,10 +194,13 @@ public class PathFinding : MonoBehaviour
 		neighbourTile.x -= 1;
 		neighbourTile.y -= 1;
 		
-		if(IsTileValid(neighbourTile) && CUT_CORNERS)
+		if(IsTileValid(neighbourTile) && CutCorners)
 		{
-			neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateManhatten(neighbourTile));
-			neighbourList.Add(neighbourNode);
+			if(IsTileValid(new Vector2(node.Tile.x - 1, node.Tile.y - 1)) && IsTileValid(new Vector2(node.Tile.x, node.Tile.y - 1)))
+			{
+				neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateManhatten(neighbourTile));
+				neighbourList.Add(neighbourNode);
+			}
 		}
 
 		// [ 0, -1 ]
@@ -209,10 +218,13 @@ public class PathFinding : MonoBehaviour
 		neighbourTile.x += 1;
 		neighbourTile.y -= 1;
 		
-		if(IsTileValid(neighbourTile) && CUT_CORNERS)
+		if(IsTileValid(neighbourTile) && CutCorners)
 		{
-			neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateManhatten(neighbourTile));
-			neighbourList.Add(neighbourNode);
+			if(IsTileValid(new Vector2(node.Tile.x, node.Tile.y - 1)) && IsTileValid(new Vector2(node.Tile.x + 1, node.Tile.y)))
+			{
+				neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateManhatten(neighbourTile));
+				neighbourList.Add(neighbourNode);
+			}
 		}
 
 		return neighbourList.ToArray();
