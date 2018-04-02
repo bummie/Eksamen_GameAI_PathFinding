@@ -254,6 +254,7 @@ public class PathFinding : MonoBehaviour
 
 	/// <summary>
 	/// Finds the index of the node with the best total score
+	/// TODO: Switch to a priority queue
 	/// </summary>
 	/// <param name="nodeList"></param>
 	/// <returns></returns>
@@ -283,4 +284,28 @@ public class PathFinding : MonoBehaviour
 	{
 		return Mathf.Abs(tile.x - _mapEditor.Goal.transform.position.x) + Mathf.Abs(tile.y - _mapEditor.Goal.transform.position.z);
 	}
+
+	/// <summary>
+	/// Visualization
+	/// </summary>
+	void OnDrawGizmos() 
+	{
+		if(_outerNodes  != null)
+		{
+			Gizmos.color = Color.yellow;
+			foreach(Node n in _outerNodes)
+			{
+				Gizmos.DrawCube(new Vector3(n.Tile.x, 0, n.Tile.y),new Vector3(.5f, .1f, .5f));
+			}
+		}
+        
+		if(_outerNodes  != null)
+		{
+			Gizmos.color = Color.magenta;
+			foreach(Node n in _innerNodes)
+			{
+				Gizmos.DrawCube(new Vector3(n.Tile.x, 0, n.Tile.y),new Vector3(.5f, .1f, .5f));
+			}
+		}
+    }
 }
