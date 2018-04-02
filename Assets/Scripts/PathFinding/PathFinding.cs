@@ -7,6 +7,8 @@ public class PathFinding : MonoBehaviour
 	private const float MOVECOST = 1;
 	private const float MOVECOST_DIAGONAL = 1.4f;
 	public bool CutCorners = true;
+	public bool DisplayOuterNodes = true;
+	public bool DisplayInnerNodes = true;
 	private MapEditor _mapEditor;
 	private TileHandler _tileHandler;
 
@@ -290,7 +292,7 @@ public class PathFinding : MonoBehaviour
 	/// </summary>
 	void OnDrawGizmos() 
 	{
-		if(_outerNodes  != null)
+		if(_outerNodes  != null && DisplayOuterNodes)
 		{
 			Gizmos.color = Color.yellow;
 			foreach(Node n in _outerNodes)
@@ -299,7 +301,7 @@ public class PathFinding : MonoBehaviour
 			}
 		}
         
-		if(_outerNodes  != null)
+		if(_outerNodes  != null && DisplayInnerNodes)
 		{
 			Gizmos.color = Color.magenta;
 			foreach(Node n in _innerNodes)

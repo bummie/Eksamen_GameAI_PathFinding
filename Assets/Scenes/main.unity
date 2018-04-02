@@ -297,9 +297,9 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1233632862}
-  - component: {fileID: 1233632863}
-  - component: {fileID: 1233632864}
   - component: {fileID: 1233632865}
+  - component: {fileID: 1233632864}
+  - component: {fileID: 1233632863}
   m_Layer: 0
   m_Name: PathFindingHandler
   m_TagString: Untagged
@@ -357,6 +357,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d988eb5f1fa26494f9572b04f52df3f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CutCorners: 1
+  DisplayOuterNodes: 1
+  DisplayInnerNodes: 1
 --- !u!1 &1280112289
 GameObject:
   m_ObjectHideFlags: 0
