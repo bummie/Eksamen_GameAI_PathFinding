@@ -5,7 +5,6 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour {
 
 	public bool ShouldMove { get; set; }
-
 	private Node[] _movePath;
 	public Node[] MovePath
 	{
@@ -58,7 +57,7 @@ public class PlayerMove : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Draw path
+	/// Draw calculated path using line gizmo
 	/// </summary>
 	void OnDrawGizmos() 
 	{

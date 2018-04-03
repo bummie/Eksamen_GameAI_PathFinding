@@ -4,19 +4,32 @@ using UnityEngine;
 
 public class PathFinding : MonoBehaviour
 {
+	#region Consts
 	private const float MOVECOST = 1;
 	private const float MOVECOST_DIAGONAL = 1.4f;
+	#endregion
+
+	#region Editor Values
 	public bool CutCorners = true;
 	public bool DisplayOuterNodes = true;
 	public bool DisplayInnerNodes = true;
+	
+	#endregion
+	
+	#region Components
 	private MapEditor _mapEditor;
 	private TileHandler _tileHandler;
+	#endregion
 
+	#region Node Array
 	private ArrayList _outerNodes;
 	private ArrayList _innerNodes;
+	#endregion
 
+	#region Timer
 	private int _timeStarted = 0;
 	private int _timeTaken = 0;
+	#endregion
 	
 	void Start()
 	{
@@ -26,6 +39,7 @@ public class PathFinding : MonoBehaviour
 
 	void Update()
 	{
+		// When space is pressed calculate new path
 		if(Input.GetKeyDown(KeyCode.Space))
 		{
 			Node[] path = CalculatePath();
@@ -35,6 +49,7 @@ public class PathFinding : MonoBehaviour
 		}
 	}
 
+	#region Path Finding Specific Methods
 	/// <summary>
 	/// Calcuates path from player to goal
 	/// Returns the path as an array of Nodes
@@ -74,7 +89,7 @@ public class PathFinding : MonoBehaviour
 			{
 				if(IsAlreadyOuterNode(neighbour))
 				{
-
+					//TODO: Do something here yo
 				}else
 				{
 					_outerNodes.Add(neighbour);
@@ -304,9 +319,10 @@ public class PathFinding : MonoBehaviour
 	{
 		return Mathf.Abs(tile.x - _mapEditor.Goal.transform.position.x) + Mathf.Abs(tile.y - _mapEditor.Goal.transform.position.z);
 	}
+	#endregion
 
 	/// <summary>
-	/// Visualization
+	/// Visualizating the outer and inner nodes
 	/// </summary>
 	void OnDrawGizmos() 
 	{

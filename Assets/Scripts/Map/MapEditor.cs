@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MapEditor : MonoBehaviour
 {
-	private enum EditorMode{AddTile, RemoveTile, Move};
+	private enum EditorMode{ AddTile, RemoveTile, Move };
 	private TileHandler _tileHandler;
 
 	#region Public Editor
@@ -16,6 +16,7 @@ public class MapEditor : MonoBehaviour
 	#endregion
 
 	#region private fields
+
 	private EditorMode _mode;
 	private Plane _mapPlane;
 	private Ray _screenToWorldRay;
@@ -33,6 +34,7 @@ public class MapEditor : MonoBehaviour
 	
 	void Update () 
 	{
+		// Left mouse button down
 		if (Input.GetMouseButtonDown(0))
 		{	
 			if(_mode == EditorMode.Move)
@@ -73,13 +75,14 @@ public class MapEditor : MonoBehaviour
 			Player.GetComponent<PlayerMove>().ShouldMove = false;
 		}
 
+		// Left mouse button up
 		if (Input.GetMouseButtonUp(0))
 		{
 			_isMoving = false;
 			_movingObject = null;
 		}
 
-		// Right click
+		// Right mousebutton down
 		if (Input.GetMouseButtonDown(1))
 		{
 			SwapMode();
@@ -131,7 +134,7 @@ public class MapEditor : MonoBehaviour
 			Vector3 position = _screenToWorldRay.GetPoint(_distance);
 			return _tileHandler.ClosestTile(position);
 		}
-		return Vector2.zero; //TODO: Throw exception
+		return Vector2.zero; //TODO: Throw exception?
 	}
 
 	/// <summary>
