@@ -81,8 +81,19 @@ public class PathFinding : MonoBehaviour
 				}
 			}
 		}
-		
-		//TODO: Trekke ut til egen metode
+	
+		_timeTaken = System.DateTime.Now.Millisecond - _timeStarted;
+		GetComponent<UIHandler>().UpdateStatus("Done: " + _timeTaken + "ms");
+
+		return TraverseToFindPath();
+	}
+
+	/// <summary>
+	/// Traveres the inner nodes backwards to find the best path to the goal
+	/// </summary>
+	/// <returns></returns>
+	private Node[] TraverseToFindPath()
+	{
 		List<Node> bestPath  = new List<Node>();
 
 		bool foundStartNode = false;
@@ -107,12 +118,8 @@ public class PathFinding : MonoBehaviour
 		}
 
 		bestPath.Reverse();
-		_timeTaken = System.DateTime.Now.Millisecond - _timeStarted;
-		Debug.Log("Found path: " + bestPath.Count + " Time: " + _timeTaken);
-		GetComponent<UIHandler>().UpdateStatus("Done: " + _timeTaken + "ms");
 		return bestPath.ToArray();
 	}
-
 
 	/// <summary>
 	/// Returns whether the given Node is
