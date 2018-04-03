@@ -132,7 +132,8 @@ public class PathFinding : MonoBehaviour
 	}
 	/// <summary>
 	/// Takes a node and finds its neighbouring nodes that are valid
-	/// TODO: change node parent to index of innerNodes array
+	/// TODO: Change node parent to index of innerNodes array
+	/// TODO: Add map bounderies
 	/// </summary>
 	/// <param name="node"></param>
 	/// <returns></returns>
