@@ -174,5 +174,7 @@ public class MapEditor : MonoBehaviour
 		{
 			_mode = EditorMode.AddTile;
 		}
+
+		GetComponent<UIHandler>().UpdateMode("Mode: " + _mode.ToString());
 	}
 }

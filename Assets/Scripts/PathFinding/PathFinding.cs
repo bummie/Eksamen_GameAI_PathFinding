@@ -14,6 +14,9 @@ public class PathFinding : MonoBehaviour
 
 	private ArrayList _outerNodes;
 	private ArrayList _innerNodes;
+
+	private int _timeStarted = 0;
+	private int _timeTaken = 0;
 	
 	void Start()
 	{
@@ -39,8 +42,12 @@ public class PathFinding : MonoBehaviour
 	/// <returns>Node[]</returns>
 	public Node[] CalculatePath()
 	{
+		GetComponent<UIHandler>().UpdateStatus("Calculating, lastTime: " + _timeTaken + "ms");
+		_timeStarted = System.DateTime.Now.Millisecond;
+		
 		_outerNodes = new ArrayList();
 		_innerNodes = new ArrayList();
+		
 		int currentNodeIndex;
 		Vector2 goalTile = _tileHandler.ClosestTile(_mapEditor.Goal.transform.position);
 
@@ -100,7 +107,9 @@ public class PathFinding : MonoBehaviour
 		}
 
 		bestPath.Reverse();
-		Debug.Log("Found path: " + bestPath.Count);
+		_timeTaken = System.DateTime.Now.Millisecond - _timeStarted;
+		Debug.Log("Found path: " + bestPath.Count + " Time: " + _timeTaken);
+		GetComponent<UIHandler>().UpdateStatus("Done: " + _timeTaken + "ms");
 		return bestPath.ToArray();
 	}
 
@@ -123,6 +132,7 @@ public class PathFinding : MonoBehaviour
 	}
 	/// <summary>
 	/// Takes a node and finds its neighbouring nodes that are valid
+	/// TODO: change node parent to index of innerNodes array
 	/// </summary>
 	/// <param name="node"></param>
 	/// <returns></returns>
