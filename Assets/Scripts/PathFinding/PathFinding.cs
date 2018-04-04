@@ -87,12 +87,14 @@ public class PathFinding : MonoBehaviour
 			Node[] currentNodeNeigbours = FetchNeighbours(currentNode);
 			foreach(Node neighbour in currentNodeNeigbours)
 			{
-				if(IsAlreadyOuterNode(neighbour))
-				{
-					//TODO: Do something here yo
-				}else
+				if(!IsAlreadyOuterNode(neighbour))
 				{
 					_outerNodes.Add(neighbour);
+				}else
+				{
+					//TODO: Implement optimalizaitonshizz
+					// if its already in the open list
+					// test if using the current G score make the aSquare F score lower, if yes update the parent because it means its a better path
 				}
 			}
 		}

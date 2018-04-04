@@ -6,6 +6,7 @@ public class MapEditor : MonoBehaviour
 {
 	private enum EditorMode{ AddTile, RemoveTile, Move };
 	private TileHandler _tileHandler;
+	private Camera _camera;
 
 	#region Public Editor
 	public GameObject Player;
@@ -28,12 +29,27 @@ public class MapEditor : MonoBehaviour
 	{
 		_mapPlane = new Plane(Vector3.up, Vector3.zero);
 		_tileHandler = GetComponent<TileHandler>();
+		_camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
 
 		_mode = EditorMode.AddTile;
 	}
 	
 	void Update () 
 	{
+		//TODO: Check if size greater 0
+		float mouseScroll = Input.GetAxis("Mouse ScrollWheel");
+		if (mouseScroll > 0f)
+		{
+			// scroll up
+			_camera.orthographicSize++;
+		}
+		else if(mouseScroll < 0f)
+		{
+			//Scroll down
+			_camera.orthographicSize--;
+		}
+
+
 		// Left mouse button down
 		if (Input.GetMouseButtonDown(0))
 		{	
