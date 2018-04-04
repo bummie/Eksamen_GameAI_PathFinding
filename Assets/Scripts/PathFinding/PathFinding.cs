@@ -345,7 +345,8 @@ public class PathFinding : MonoBehaviour
 		if(_outerNodes  != null && DisplayOuterNodes)
 		{
 			Gizmos.color = Color.yellow;
-			foreach(Node n in _outerNodes)
+			Node[] tempArray = _outerNodes.ToArray() as Node[];
+			foreach(Node n in tempArray)
 			{
 				Gizmos.DrawCube(new Vector3(n.Tile.x, 0, n.Tile.y),new Vector3(.5f, .1f, .5f));
 			}
@@ -354,7 +355,9 @@ public class PathFinding : MonoBehaviour
 		if(_outerNodes  != null && DisplayInnerNodes)
 		{
 			Gizmos.color = Color.magenta;
-			foreach(Node n in _innerNodes)
+			
+			Node[] tempArray = _innerNodes.ToArray() as Node[];
+			foreach(Node n in tempArray)
 			{
 				Gizmos.DrawCube(new Vector3(n.Tile.x, 0, n.Tile.y),new Vector3(.5f, .1f, .5f));
 			}
