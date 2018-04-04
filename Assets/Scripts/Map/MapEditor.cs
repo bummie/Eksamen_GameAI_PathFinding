@@ -36,74 +36,35 @@ public class MapEditor : MonoBehaviour
 	
 	void Update () 
 	{
-		//TODO: Check if size greater 0
+		MapZoom();
+
+		HandleModeAction();
+
+		SwapMode();
+	}
+
+	/// <summary>
+	/// Handles scroll zoom
+	/// </summary>
+	private void MapZoom()
+	{
 		float mouseScroll = Input.GetAxis("Mouse ScrollWheel");
 		if (mouseScroll > 0f)
-		{
-			// scroll up
-			_camera.orthographicSize++;
+		{	
+			if(_camera.orthographicSize > 15)
+			{
+				_camera.orthographicSize--;
+			}
+			
 		}
 		else if(mouseScroll < 0f)
 		{
-			//Scroll down
-			_camera.orthographicSize--;
-		}
-
-
-		// Left mouse button down
-		if (Input.GetMouseButtonDown(0))
-		{	
-			if(_mode == EditorMode.Move)
+			if(_camera.orthographicSize < 60)
 			{
-				GameObject clickedObject = FetchClickedObject();
-				
-				if(clickedObject.tag == "Moveable")
-				{
-					_isMoving = true;
-					_movingObject = clickedObject;
-					Player.GetComponent<PlayerMove>().ShouldMove = false;
-				}
+				_camera.orthographicSize++;
 			}
 		}
 
-		//Left mouse button held down
-        if (Input.GetMouseButton(0))
-		{
-			switch(_mode)
-			{
-				case EditorMode.AddTile:
-					AddObstacle();
-				break;
-
-				case EditorMode.RemoveTile:
-					RemoveObstacle();
-				break;
-
-				case EditorMode.Move:
-					if(_isMoving)
-					{	
-						Vector2 tilePosition = MousePositionToTile();
-						_movingObject.transform.position = new Vector3(tilePosition.x, -.5f, tilePosition.y);
-					}
-				break;
-			}
-			
-			Player.GetComponent<PlayerMove>().ShouldMove = false;
-		}
-
-		// Left mouse button up
-		if (Input.GetMouseButtonUp(0))
-		{
-			_isMoving = false;
-			_movingObject = null;
-		}
-
-		// Right mousebutton down
-		if (Input.GetMouseButtonDown(1))
-		{
-			SwapMode();
-			Debug.Log("Mode: " + _mode.ToString());
-		}
 	}
 
 	/// <summary>
@@ -182,18 +143,72 @@ public class MapEditor : MonoBehaviour
 		return obstacle;
 	}
 
+	private void HandleModeAction()
+	{
+		// Left mouse button down
+		if (Input.GetMouseButtonDown(0))
+		{	
+			if(_mode == EditorMode.Move)
+			{
+				GameObject clickedObject = FetchClickedObject();
+				
+				if(clickedObject.tag == "Moveable")
+				{
+					_isMoving = true;
+					_movingObject = clickedObject;
+					Player.GetComponent<PlayerMove>().ShouldMove = false;
+				}
+			}
+		}
+
+		//Left mouse button held down
+        if (Input.GetMouseButton(0))
+		{
+			switch(_mode)
+			{
+				case EditorMode.AddTile:
+					AddObstacle();
+				break;
+
+				case EditorMode.RemoveTile:
+					RemoveObstacle();
+				break;
+
+				case EditorMode.Move:
+					if(_isMoving)
+					{	
+						Vector2 tilePosition = MousePositionToTile();
+						_movingObject.transform.position = new Vector3(tilePosition.x, -.5f, tilePosition.y);
+					}
+				break;
+			}
+			
+			Player.GetComponent<PlayerMove>().ShouldMove = false;
+		}
+
+		// Left mouse button up
+		if (Input.GetMouseButtonUp(0))
+		{
+			_isMoving = false;
+			_movingObject = null;
+		}
+	}
+
 	/// <summary>
 	/// Changes the editormode to the next in queue
 	/// </summary>
 	private void SwapMode()
 	{
-		_mode++;
-
-		if(_mode > EditorMode.Move)
+		if (Input.GetMouseButtonDown(1))
 		{
-			_mode = EditorMode.AddTile;
-		}
+			_mode++;
 
-		GetComponent<UIHandler>().UpdateMode("Mode: " + _mode.ToString());
+			if(_mode > EditorMode.Move)
+			{
+				_mode = EditorMode.AddTile;
+			}
+
+			GetComponent<UIHandler>().UpdateMode("Mode: " + _mode.ToString());
+		}
 	}
 }
