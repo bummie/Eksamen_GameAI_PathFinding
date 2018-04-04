@@ -13,6 +13,7 @@ public class PathFinding : MonoBehaviour
 
 	#region Editor Values
 	public bool CutCorners = true;
+	public int PathFindingDelay = 10;
 	public bool DisplayOuterNodes = true;
 	public bool DisplayInnerNodes = true;
 	
@@ -83,6 +84,7 @@ public class PathFinding : MonoBehaviour
 
 		while(_outerNodes.Count > 0)
 		{
+			Thread.Sleep(100);
 			currentNodeIndex = FindBestScoringNode(_outerNodes);
 			_innerNodes.Add(_outerNodes[currentNodeIndex]);
 			_outerNodes.RemoveAt(currentNodeIndex);
@@ -345,10 +347,10 @@ public class PathFinding : MonoBehaviour
 		if(_outerNodes  != null && DisplayOuterNodes)
 		{
 			Gizmos.color = Color.yellow;
-			Node[] tempArray = _outerNodes.ToArray() as Node[];
+			Node[] tempArray = _outerNodes.ToArray(typeof(Node)) as Node[];
 			foreach(Node n in tempArray)
 			{
-				Gizmos.DrawCube(new Vector3(n.Tile.x, 0, n.Tile.y),new Vector3(.5f, .1f, .5f));
+				Gizmos.DrawCube(new Vector3(n.Tile.x, 0, n.Tile.y), new Vector3(.5f, .1f, .5f));
 			}
 		}
         
@@ -356,7 +358,7 @@ public class PathFinding : MonoBehaviour
 		{
 			Gizmos.color = Color.magenta;
 			
-			Node[] tempArray = _innerNodes.ToArray() as Node[];
+			Node[] tempArray = _innerNodes.ToArray(typeof(Node)) as Node[];
 			foreach(Node n in tempArray)
 			{
 				Gizmos.DrawCube(new Vector3(n.Tile.x, 0, n.Tile.y),new Vector3(.5f, .1f, .5f));

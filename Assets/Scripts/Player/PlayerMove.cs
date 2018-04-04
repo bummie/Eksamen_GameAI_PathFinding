@@ -40,7 +40,7 @@ public class PlayerMove : MonoBehaviour {
 	/// </summary>
 	private void MovePlayer()
 	{
-		if(ShouldMove)
+		if(ShouldMove && MovePath != null)
 		{
 			if(_currentPathIndex == MovePath.Length)
 			{ ShouldMove = false; return; }
