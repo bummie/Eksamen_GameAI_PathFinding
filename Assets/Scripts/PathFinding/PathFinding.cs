@@ -7,6 +7,7 @@ public class PathFinding : MonoBehaviour
 	#region Consts
 	private const float MOVECOST = 1;
 	private const float MOVECOST_DIAGONAL = 1.4f;
+	private const int MAP_LIMIT = 50;
 	#endregion
 
 	#region Editor Values
@@ -156,8 +157,6 @@ public class PathFinding : MonoBehaviour
 	}
 	/// <summary>
 	/// Takes a node and finds its neighbouring nodes that are valid
-	/// TODO: Change node parent to index of innerNodes array
-	/// TODO: Add map bounderies
 	/// </summary>
 	/// <param name="node"></param>
 	/// <returns></returns>
@@ -275,11 +274,15 @@ public class PathFinding : MonoBehaviour
 	/// <returns></returns>
 	private bool IsTileValid(Vector2 tile)
 	{	
+		// Map bounderies
+		if(tile.x >= MAP_LIMIT || tile.x <= -MAP_LIMIT || tile.y >= MAP_LIMIT || tile.y <= -MAP_LIMIT )
+		{ return false; }
+
 		// is node an obstacle?
 		if(_tileHandler.IsTileOccupied(tile))
 		{ return false; }
 
-		// Is node in outerNodelist?
+		// Is node in innerNodelist?
 		foreach(Node n in _innerNodes)
 		{
 			if(tile == n.Tile)
