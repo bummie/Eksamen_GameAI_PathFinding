@@ -38,6 +38,8 @@ public class MapEditor : MonoBehaviour
 	{
 		MapZoom();
 
+		MoveMap();
+
 		HandleModeAction();
 
 		SwapMode();
@@ -64,7 +66,40 @@ public class MapEditor : MonoBehaviour
 				_camera.orthographicSize++;
 			}
 		}
+	}
 
+	/// <summary>
+	/// Moves the map by usning the WASD keys
+	/// </summary>
+	private void MoveMap()
+	{
+		if(Input.GetKey(KeyCode.W))
+		{	
+			Vector3 camPos = _camera.transform.position;
+			camPos.z++;
+			_camera.transform.position = camPos;
+		}
+
+		if(Input.GetKey(KeyCode.S))
+		{	
+			Vector3 camPos = _camera.transform.position;
+			camPos.z--;
+			_camera.transform.position = camPos;
+		}
+
+		if(Input.GetKey(KeyCode.A))
+		{	
+			Vector3 camPos = _camera.transform.position;
+			camPos.x--;
+			_camera.transform.position = camPos;
+		}
+
+		if(Input.GetKey(KeyCode.D))
+		{	
+			Vector3 camPos = _camera.transform.position;
+			camPos.x++;
+			_camera.transform.position = camPos;
+		}
 	}
 
 	/// <summary>
