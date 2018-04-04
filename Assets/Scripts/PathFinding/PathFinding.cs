@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading; 
 
 public class PathFinding : MonoBehaviour
 {
@@ -20,6 +21,8 @@ public class PathFinding : MonoBehaviour
 	#region Components
 	private MapEditor _mapEditor;
 	private TileHandler _tileHandler;
+	private UIHandler _uiHandler;
+	private PlayerMove _playerMove;
 	#endregion
 
 	#region Node Array
@@ -31,11 +34,16 @@ public class PathFinding : MonoBehaviour
 	private int _timeStarted = 0;
 	private int _timeTaken = 0;
 	#endregion
+
+	private Thread _pathFindingThread;
+	private Vector3 _playerPos, _goalPos;
 	
 	void Start()
 	{
 		_mapEditor = GetComponent<MapEditor>();
 		_tileHandler = GetComponent<TileHandler>();
+		_uiHandler = GetComponent<UIHandler>();
+		_playerMove = _mapEditor.Player.GetComponent<PlayerMove>();
 	}
 
 	void Update()
@@ -43,10 +51,11 @@ public class PathFinding : MonoBehaviour
 		// When space is pressed calculate new path
 		if(Input.GetKeyDown(KeyCode.Space))
 		{
-			Node[] path = CalculatePath();
-		
-			_mapEditor.Player.GetComponent<PlayerMove>().MovePath = path;
-			_mapEditor.Player.GetComponent<PlayerMove>().ShouldMove = true;
+			_playerPos = _mapEditor.Player.transform.position;
+			_goalPos = _mapEditor.Goal.transform.position;
+
+			_pathFindingThread = new Thread(CalculatePath);
+			_pathFindingThread.Start();
 		}
 	}
 
@@ -56,19 +65,19 @@ public class PathFinding : MonoBehaviour
 	/// Returns the path as an array of Nodes
 	/// </summary>
 	/// <returns>Node[]</returns>
-	public Node[] CalculatePath()
+	private void CalculatePath()
 	{
-		GetComponent<UIHandler>().UpdateStatus("Calculating, lastTime: " + _timeTaken + "ms");
+		_uiHandler.UpdateStatus("Calculating, lastTime: " + _timeTaken + "ms");
 		_timeStarted = System.DateTime.Now.Millisecond;
 		
 		_outerNodes = new ArrayList();
 		_innerNodes = new ArrayList();
 		
 		int currentNodeIndex;
-		Vector2 goalTile = _tileHandler.ClosestTile(_mapEditor.Goal.transform.position);
+		Vector2 goalTile = _tileHandler.ClosestTile(_goalPos);
 
 		// Add the starting node
-		Vector2 playerTile = _tileHandler.ClosestTile(_mapEditor.Player.transform.position);
+		Vector2 playerTile = _tileHandler.ClosestTile(_playerPos);
 		Node playerNode = new Node(playerTile, null, 0, CalculateManhatten(playerTile));
 		_outerNodes.Add(playerNode);
 
@@ -101,9 +110,10 @@ public class PathFinding : MonoBehaviour
 		}
 	
 		_timeTaken = System.DateTime.Now.Millisecond - _timeStarted;
-		GetComponent<UIHandler>().UpdateStatus("Done: " + _timeTaken + "ms");
+		_uiHandler.UpdateStatus("Done: " + _timeTaken + "ms");
 
-		return TraverseToFindPath();
+		_playerMove.MovePath = TraverseToFindPath();
+		_playerMove.ShouldMove = true;
 	}
 
 	/// <summary>
@@ -322,12 +332,13 @@ public class PathFinding : MonoBehaviour
 	/// <returns></returns>
 	private float CalculateManhatten(Vector2 tile)
 	{
-		return Mathf.Abs(tile.x - _mapEditor.Goal.transform.position.x) + Mathf.Abs(tile.y - _mapEditor.Goal.transform.position.z);
+		return Mathf.Abs(tile.x - _goalPos.x) + Mathf.Abs(tile.y - _goalPos.z);
 	}
 	#endregion
 
 	/// <summary>
 	/// Visualizating the outer and inner nodes
+	/// TODO: Fix when threaded crazy shit
 	/// </summary>
 	void OnDrawGizmos() 
 	{

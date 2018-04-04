@@ -6,6 +6,20 @@ using UnityEngine.UI;
 public class UIHandler : MonoBehaviour 
 {
 	public Text textStatus, textMode;
+	private bool _textChanged = false;
+	private string _newTextStatus = "";
+	private string _newTextMode = "";
+
+	void Update()
+	{
+		if(_textChanged)
+		{
+			textStatus.text = _newTextStatus;
+			textMode.text = _newTextMode;
+
+			_textChanged = false;
+		}
+	}
 
 	/// <summary>
 	/// Updates the UI text in status
@@ -13,7 +27,8 @@ public class UIHandler : MonoBehaviour
 	/// <param name="text"></param>
 	public void UpdateStatus(string text)
 	{
-		textStatus.text = text;
+		_newTextStatus = text;
+		_textChanged = true;
 	}
 
 	/// <summary>
@@ -22,6 +37,7 @@ public class UIHandler : MonoBehaviour
 	/// <param name="text"></param>
 	public void UpdateMode(string text)
 	{
-		textMode.text = text;
+		_newTextMode = text;
+		_textChanged = true;
 	}
 }
