@@ -54,9 +54,10 @@ public class PathFinding : MonoBehaviour
 		{
 			_playerPos = _mapEditor.Player.transform.position;
 			_goalPos = _mapEditor.Goal.transform.position;
-
+			
 			_pathFindingThread = new Thread(CalculatePath);
 			_pathFindingThread.Start();
+			//TODO: Terminate thread if already running or wait til finished before new thread
 		}
 	}
 
@@ -350,7 +351,8 @@ public class PathFinding : MonoBehaviour
 			Node[] tempArray = _outerNodes.ToArray(typeof(Node)) as Node[];
 			foreach(Node n in tempArray)
 			{
-				Gizmos.DrawCube(new Vector3(n.Tile.x, 0, n.Tile.y), new Vector3(.5f, .1f, .5f));
+				if(n != null)
+				{Gizmos.DrawCube(new Vector3(n.Tile.x, 0, n.Tile.y), new Vector3(.5f, .1f, .5f));}
 			}
 		}
         
@@ -361,7 +363,8 @@ public class PathFinding : MonoBehaviour
 			Node[] tempArray = _innerNodes.ToArray(typeof(Node)) as Node[];
 			foreach(Node n in tempArray)
 			{
-				Gizmos.DrawCube(new Vector3(n.Tile.x, 0, n.Tile.y),new Vector3(.5f, .1f, .5f));
+				if(n != null)
+				{Gizmos.DrawCube(new Vector3(n.Tile.x, 0, n.Tile.y),new Vector3(.5f, .1f, .5f));}
 			}
 		}
     }
