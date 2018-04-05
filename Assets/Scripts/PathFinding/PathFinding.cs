@@ -36,7 +36,11 @@ public class PathFinding : MonoBehaviour
 	private int _timeTaken = 0;
 	#endregion
 
+	#region Threading
 	private Thread _pathFindingThread;
+	private bool _threadRunning = false;
+	private bool _killThread = false;
+	#endregion
 	private Vector3 _playerPos, _goalPos;
 	
 	void Start()
@@ -55,6 +59,10 @@ public class PathFinding : MonoBehaviour
 			_playerPos = _mapEditor.Player.transform.position;
 			_goalPos = _mapEditor.Goal.transform.position;
 			
+			if(_threadRunning)
+			{
+				_killThread = true;
+			}
 			_pathFindingThread = new Thread(CalculatePath);
 			_pathFindingThread.Start();
 			//TODO: Terminate thread if already running or wait til finished before new thread
@@ -68,7 +76,8 @@ public class PathFinding : MonoBehaviour
 	/// </summary>
 	/// <returns>Node[]</returns>
 	private void CalculatePath()
-	{
+	{	
+		_threadRunning = true;
 		_uiHandler.UpdateStatus("Calculating, lastTime: " + _timeTaken + "ms");
 		_timeStarted = System.DateTime.Now.Millisecond;
 		
@@ -85,7 +94,15 @@ public class PathFinding : MonoBehaviour
 
 		while(_outerNodes.Count > 0)
 		{
-			Thread.Sleep(100);
+			if(_killThread)
+			{
+				_playerMove.MovePath = null;
+				_playerMove.ShouldMove = false;
+				_killThread = false;
+				return;
+			}
+
+			Thread.Sleep(PathFindingDelay);
 			currentNodeIndex = FindBestScoringNode(_outerNodes);
 			_innerNodes.Add(_outerNodes[currentNodeIndex]);
 			_outerNodes.RemoveAt(currentNodeIndex);
@@ -105,6 +122,7 @@ public class PathFinding : MonoBehaviour
 					_outerNodes.Add(neighbour);
 				}else
 				{
+					Debug.Log("Already in open list");
 					//TODO: Implement optimalizaitonshizz
 					// if its already in the open list
 					// test if using the current G score make the aSquare F score lower, if yes update the parent because it means its a better path
@@ -117,6 +135,7 @@ public class PathFinding : MonoBehaviour
 
 		_playerMove.MovePath = TraverseToFindPath();
 		_playerMove.ShouldMove = true;
+		_threadRunning = false;
 	}
 
 	/// <summary>
@@ -319,7 +338,7 @@ public class PathFinding : MonoBehaviour
 		{				
 			Node listNode = nodeList[i] as Node;
 
-			if((bestNodeScore == -1) || listNode.TotalScore < bestNodeScore )
+			if((bestNodeScore == -1) || listNode.TotalScore < bestNodeScore ) //TODO: Check if H-cost is lower
 			{
 				bestNodeIndex = i;
 				bestNodeScore = listNode.TotalScore;
@@ -341,30 +360,40 @@ public class PathFinding : MonoBehaviour
 
 	/// <summary>
 	/// Visualizating the outer and inner nodes
-	/// TODO: Fix when threaded crazy shit
 	/// </summary>
 	void OnDrawGizmos() 
 	{
 		if(_outerNodes  != null && DisplayOuterNodes)
 		{
 			Gizmos.color = Color.yellow;
-			Node[] tempArray = _outerNodes.ToArray(typeof(Node)) as Node[];
-			foreach(Node n in tempArray)
+			try
 			{
-				if(n != null)
-				{Gizmos.DrawCube(new Vector3(n.Tile.x, 0, n.Tile.y), new Vector3(.5f, .1f, .5f));}
+				Node[] tempArray = _outerNodes.ToArray(typeof(Node)) as Node[];
+				foreach(Node n in tempArray)
+				{
+					if(n != null)
+					{Gizmos.DrawCube(new Vector3(n.Tile.x, 0, n.Tile.y), new Vector3(.5f, .1f, .5f));}
+				}
+			}catch(System.ArgumentException e)
+			{
+				Debug.Log("Gizmo display array copy failed");
 			}
 		}
         
 		if(_outerNodes  != null && DisplayInnerNodes)
 		{
 			Gizmos.color = Color.magenta;
-			
-			Node[] tempArray = _innerNodes.ToArray(typeof(Node)) as Node[];
-			foreach(Node n in tempArray)
+			try
 			{
-				if(n != null)
-				{Gizmos.DrawCube(new Vector3(n.Tile.x, 0, n.Tile.y),new Vector3(.5f, .1f, .5f));}
+				Node[] tempArray = _innerNodes.ToArray(typeof(Node)) as Node[];
+				foreach(Node n in tempArray)
+				{
+					if(n != null)
+					{Gizmos.DrawCube(new Vector3(n.Tile.x, 0, n.Tile.y),new Vector3(.5f, .1f, .5f));}
+				}
+			}catch(System.ArgumentException e)
+			{
+				Debug.Log("Gizmo display array copy failed");
 			}
 		}
     }
