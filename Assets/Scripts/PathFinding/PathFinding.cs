@@ -122,10 +122,17 @@ public class PathFinding : MonoBehaviour
 					_outerNodes.Add(neighbour);
 				}else
 				{
-					Debug.Log("Already in open list");
-					//TODO: Implement optimalizaitonshizz
+					//Debug.Log("Already Openlist:" + neighbour.MoveCost + " < " + currentNode.MoveCost);
+					//TODO: Implement optimalizaito nshizz
 					// if its already in the open list
 					// test if using the current G score make the aSquare F score lower, if yes update the parent because it means its a better path
+					
+					if(neighbour.MoveCost < (currentNode.MoveCost+1))
+					{
+						Debug.Log("Neihgbour is better parent yo");
+						neighbour.Parent = currentNode;
+						neighbour.MoveCost = currentNode.MoveCost + 1;
+					}
 				}
 			}
 		}
@@ -338,7 +345,7 @@ public class PathFinding : MonoBehaviour
 		{				
 			Node listNode = nodeList[i] as Node;
 
-			if((bestNodeScore == -1) || listNode.TotalScore < bestNodeScore ) //TODO: Check if H-cost is lower
+			if((bestNodeScore == -1) || listNode.TotalScore < bestNodeScore )
 			{
 				bestNodeIndex = i;
 				bestNodeScore = listNode.TotalScore;

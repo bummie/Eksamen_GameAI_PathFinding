@@ -5,9 +5,28 @@ public class Node
 {
 	#region Node Properties
 	public Vector2 Tile { get; private set; }
-	public Node Parent { get; private set; }
-	public float MoveCost { get; private set; }
-	public float HeuristicCost { get; private set; }
+	public Node Parent { get; set; }
+	private float _moveCost;
+	public float MoveCost
+	{
+		get{ return _moveCost; }
+		set
+		{
+			_moveCost = value;
+			TotalScore = MoveCost + HeuristicCost;
+		}
+	}
+	private float _heuristicCost;
+	public float HeuristicCost
+	{
+		get{ return _heuristicCost; }
+		set
+		{
+			_heuristicCost = value;
+			TotalScore = MoveCost + HeuristicCost;
+		}
+	}
+
 	public float TotalScore { get; private set; }
 	#endregion
 	
