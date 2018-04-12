@@ -89,9 +89,9 @@ public class PathFinding : MonoBehaviour
 
 		// Add the starting node
 		Vector2 playerTile = _tileHandler.ClosestTile(_playerPos);
-		Node playerNode = new Node(playerTile, null, 0, CalculateManhatten(playerTile));
+		Node playerNode = new Node(playerTile, null, 0, CalculateEuclidian(playerTile));
 		_outerNodes.Add(playerNode);
-
+		bool _pathFound = false;
 		while(_outerNodes.Count > 0)
 		{
 			if(_killThread)
@@ -111,37 +111,35 @@ public class PathFinding : MonoBehaviour
 			
 			if(currentNode.Tile == goalTile)
 			{
+				_pathFound = true;
 				break; // Found path
 			}
 
-			Node[] currentNodeNeigbours = FetchNeighbours(currentNode);
-			foreach(Node neighbour in currentNodeNeigbours)
+			Node[] currentNodeNeighbours = FetchNeighbours(currentNode);
+			foreach(Node neighbour in currentNodeNeighbours)
 			{
 				if(!IsAlreadyOuterNode(neighbour))
-				{
-					_outerNodes.Add(neighbour);
-				}else
-				{
-					//Debug.Log("Already Openlist:" + neighbour.MoveCost + " < " + currentNode.MoveCost);
-					//TODO: Implement optimalizaito nshizz
-					// if its already in the open list
-					// test if using the current G score make the aSquare F score lower, if yes update the parent because it means its a better path
-					
-					if(neighbour.MoveCost < (currentNode.MoveCost+1))
-					{
-						Debug.Log("Neihgbour is better parent yo");
-						neighbour.Parent = currentNode;
-						neighbour.MoveCost = currentNode.MoveCost + 1;
-					}
-				}
+				{ _outerNodes.Add(neighbour); continue;}
+
+				Node outerNode = FetchOuterNodeAtTile(neighbour.Tile);
+				float newCost = currentNode.MoveCost + CalculateEuclidian(currentNode.Tile, outerNode.Tile);
+				if(outerNode.MoveCost <= (newCost))
+				{ continue; }
+
+				Debug.Log("Neighbour is better parent yo");
+				outerNode.Parent = currentNode;
+				outerNode.MoveCost = newCost;
 			}
 		}
-	
+
 		_timeTaken = System.DateTime.Now.Millisecond - _timeStarted;
 		_uiHandler.UpdateStatus("Done: " + _timeTaken + "ms");
 
-		_playerMove.MovePath = TraverseToFindPath();
-		_playerMove.ShouldMove = true;
+		if(_pathFound)
+		{
+			_playerMove.MovePath = TraverseToFindPath();
+			_playerMove.ShouldMove = true;
+		}
 		_threadRunning = false;
 	}
 
@@ -194,6 +192,22 @@ public class PathFinding : MonoBehaviour
 
 		return false;
 	}
+
+	/// <summary>
+	/// Returns node in outerNodes from given tile
+	/// </summary>
+	/// <param name="tile"></param>
+	/// <returns></returns>
+	private Node FetchOuterNodeAtTile(Vector2 tile)
+	{
+		foreach(Node n in _outerNodes)
+		{
+			if(n.Tile == tile)
+			{ return n; }
+		}
+
+		return null; 
+	}
 	/// <summary>
 	/// Takes a node and finds its neighbouring nodes that are valid
 	/// </summary>
@@ -215,7 +229,7 @@ public class PathFinding : MonoBehaviour
 			// Check if sides are valid so the player cant squeese through
 			if(IsTileValid(new Vector2(node.Tile.x - 1, node.Tile.y)) && IsTileValid(new Vector2(node.Tile.x, node.Tile.y + 1)))
 			{
-				neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateManhatten(neighbourTile));
+				neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateEuclidian(neighbourTile));
 				neighbourList.Add(neighbourNode);
 			}
 		}
@@ -226,7 +240,7 @@ public class PathFinding : MonoBehaviour
 		
 		if(IsTileValid(neighbourTile))
 		{
-			neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST, CalculateManhatten(neighbourTile));
+			neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST, CalculateEuclidian(neighbourTile));
 			neighbourList.Add(neighbourNode);
 		}
 
@@ -239,7 +253,7 @@ public class PathFinding : MonoBehaviour
 		{
 			if(IsTileValid(new Vector2(node.Tile.x, node.Tile.y + 1)) && IsTileValid(new Vector2(node.Tile.x + 1, node.Tile.y)))
 			{
-				neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateManhatten(neighbourTile));
+				neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateEuclidian(neighbourTile));
 				neighbourList.Add(neighbourNode);
 			}
 		}
@@ -250,7 +264,7 @@ public class PathFinding : MonoBehaviour
 		
 		if(IsTileValid(neighbourTile))
 		{
-			neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST, CalculateManhatten(neighbourTile));
+			neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST, CalculateEuclidian(neighbourTile));
 			neighbourList.Add(neighbourNode);
 		}
 
@@ -260,7 +274,7 @@ public class PathFinding : MonoBehaviour
 		
 		if(IsTileValid(neighbourTile))
 		{
-			neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST, CalculateManhatten(neighbourTile));
+			neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST, CalculateEuclidian(neighbourTile));
 			neighbourList.Add(neighbourNode);
 		}
 
@@ -273,7 +287,7 @@ public class PathFinding : MonoBehaviour
 		{
 			if(IsTileValid(new Vector2(node.Tile.x - 1, node.Tile.y - 1)) && IsTileValid(new Vector2(node.Tile.x, node.Tile.y - 1)))
 			{
-				neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateManhatten(neighbourTile));
+				neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateEuclidian(neighbourTile));
 				neighbourList.Add(neighbourNode);
 			}
 		}
@@ -284,7 +298,7 @@ public class PathFinding : MonoBehaviour
 		
 		if(IsTileValid(neighbourTile))
 		{
-			neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST, CalculateManhatten(neighbourTile));
+			neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST, CalculateEuclidian(neighbourTile));
 			neighbourList.Add(neighbourNode);
 		}
 
@@ -297,7 +311,7 @@ public class PathFinding : MonoBehaviour
 		{
 			if(IsTileValid(new Vector2(node.Tile.x, node.Tile.y - 1)) && IsTileValid(new Vector2(node.Tile.x + 1, node.Tile.y)))
 			{
-				neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateManhatten(neighbourTile));
+				neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateEuclidian(neighbourTile));
 				neighbourList.Add(neighbourNode);
 			}
 		}
@@ -362,6 +376,26 @@ public class PathFinding : MonoBehaviour
 	private float CalculateManhatten(Vector2 tile)
 	{
 		return Mathf.Abs(tile.x - _goalPos.x) + Mathf.Abs(tile.y - _goalPos.z);
+	}
+
+	/// <summary>
+	/// Calculates the eucdlian distance from a tile to goal
+	/// </summary>
+	/// <param name="tile"></param>
+	/// <returns></returns>
+	private float CalculateEuclidian(Vector2 tile)
+	{
+		return Mathf.Sqrt(Mathf.Pow((tile.x - _goalPos.x), 2f) + Mathf.Pow((tile.y - _goalPos.z), 2f));
+	}
+
+	/// <summary>
+	/// Calculates the eucdlian distance from a tile to another tile
+	/// </summary>
+	/// <param name="tile"></param>
+	/// <returns></returns>
+	private float CalculateEuclidian(Vector2 tileStart, Vector2 tileEnd)
+	{
+		return Mathf.Sqrt(Mathf.Pow((tileStart.x - tileEnd.x), 2f) + Mathf.Pow((tileStart.y - tileEnd.y), 2f));
 	}
 	#endregion
 
