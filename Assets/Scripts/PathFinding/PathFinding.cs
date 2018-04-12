@@ -227,7 +227,7 @@ public class PathFinding : MonoBehaviour
 		if(IsTileValid(neighbourTile) && CutCorners)
 		{
 			// Check if sides are valid so the player cant squeese through
-			if(IsTileValid(new Vector2(node.Tile.x - 1, node.Tile.y)) && IsTileValid(new Vector2(node.Tile.x, node.Tile.y + 1)))
+			if(IsTileValid(new Vector2(node.Tile.x - 1, node.Tile.y)) || IsTileValid(new Vector2(node.Tile.x, node.Tile.y + 1)))
 			{
 				neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateEuclidian(neighbourTile));
 				neighbourList.Add(neighbourNode);
@@ -251,7 +251,7 @@ public class PathFinding : MonoBehaviour
 		
 		if(IsTileValid(neighbourTile) && CutCorners)
 		{
-			if(IsTileValid(new Vector2(node.Tile.x, node.Tile.y + 1)) && IsTileValid(new Vector2(node.Tile.x + 1, node.Tile.y)))
+			if(IsTileValid(new Vector2(node.Tile.x, node.Tile.y + 1)) || IsTileValid(new Vector2(node.Tile.x + 1, node.Tile.y)))
 			{
 				neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateEuclidian(neighbourTile));
 				neighbourList.Add(neighbourNode);
@@ -285,7 +285,7 @@ public class PathFinding : MonoBehaviour
 		
 		if(IsTileValid(neighbourTile) && CutCorners)
 		{
-			if(IsTileValid(new Vector2(node.Tile.x - 1, node.Tile.y - 1)) && IsTileValid(new Vector2(node.Tile.x, node.Tile.y - 1)))
+			if(IsTileValid(new Vector2(node.Tile.x - 1, node.Tile.y - 1)) || IsTileValid(new Vector2(node.Tile.x, node.Tile.y - 1)))
 			{
 				neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateEuclidian(neighbourTile));
 				neighbourList.Add(neighbourNode);
@@ -309,7 +309,7 @@ public class PathFinding : MonoBehaviour
 		
 		if(IsTileValid(neighbourTile) && CutCorners)
 		{
-			if(IsTileValid(new Vector2(node.Tile.x, node.Tile.y - 1)) && IsTileValid(new Vector2(node.Tile.x + 1, node.Tile.y)))
+			if(IsTileValid(new Vector2(node.Tile.x, node.Tile.y - 1)) || IsTileValid(new Vector2(node.Tile.x + 1, node.Tile.y)))
 			{
 				neighbourNode = new Node(neighbourTile, node, node.MoveCost + MOVECOST_DIAGONAL, CalculateEuclidian(neighbourTile));
 				neighbourList.Add(neighbourNode);
