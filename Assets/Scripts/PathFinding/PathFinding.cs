@@ -65,7 +65,6 @@ public class PathFinding : MonoBehaviour
 			}
 			_pathFindingThread = new Thread(CalculatePath);
 			_pathFindingThread.Start();
-			//TODO: Terminate thread if already running or wait til finished before new thread
 		}
 	}
 
@@ -126,7 +125,6 @@ public class PathFinding : MonoBehaviour
 				if(outerNode.MoveCost <= (newCost))
 				{ continue; }
 
-				Debug.Log("Neighbour is better parent yo");
 				outerNode.Parent = currentNode;
 				outerNode.MoveCost = newCost;
 			}
