@@ -32,8 +32,9 @@ public class PathFinding : MonoBehaviour
 	#endregion
 
 	#region Timer
-	private int _timeStarted = 0;
-	private int _timeTaken = 0;
+	private float _timeStarted = 0;
+	private float _timeTaken = 0;
+	private bool _timerRunning = false;
 	#endregion
 
 	#region Threading
@@ -65,6 +66,17 @@ public class PathFinding : MonoBehaviour
 			}
 			_pathFindingThread = new Thread(CalculatePath);
 			_pathFindingThread.Start();
+
+			_uiHandler.UpdateStatus("Calculating, lastTime: " + _timeTaken + "ms");
+			_timeStarted = Time.time * 1000;
+			_timerRunning = true;
+		}
+
+		if(!_threadRunning && _timerRunning)
+		{
+			_timeTaken = (Time.time * 1000) - _timeStarted;
+			_uiHandler.UpdateStatus("Done: " + _timeTaken + "ms");
+			_timerRunning = false;
 		}
 	}
 
@@ -77,9 +89,7 @@ public class PathFinding : MonoBehaviour
 	private void CalculatePath()
 	{	
 		_threadRunning = true;
-		_uiHandler.UpdateStatus("Calculating, lastTime: " + _timeTaken + "ms");
-		_timeStarted = System.DateTime.Now.Millisecond;
-		
+
 		_outerNodes = new ArrayList();
 		_innerNodes = new ArrayList();
 		
@@ -130,9 +140,6 @@ public class PathFinding : MonoBehaviour
 				outerNode.MoveCost = newCost;
 			}
 		}
-
-		_timeTaken = System.DateTime.Now.Millisecond - _timeStarted;
-		_uiHandler.UpdateStatus("Done: " + _timeTaken + "ms");
 
 		if(_pathFound)
 		{
