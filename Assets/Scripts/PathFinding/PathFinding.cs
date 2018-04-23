@@ -57,19 +57,7 @@ public class PathFinding : MonoBehaviour
 		// When space is pressed calculate new path
 		if(Input.GetKeyDown(KeyCode.Space))
 		{
-			_playerPos = _mapEditor.Player.transform.position;
-			_goalPos = _mapEditor.Goal.transform.position;
-			
-			if(_threadRunning)
-			{
-				_killThread = true;
-			}
-			_pathFindingThread = new Thread(CalculatePath);
-			_pathFindingThread.Start();
-
-			_uiHandler.UpdateStatus("Calculating, lastTime: " + _timeTaken + "ms");
-			_timeStarted = Time.time * 1000;
-			_timerRunning = true;
+			StartPathCalculation();
 		}
 
 		if(!_threadRunning && _timerRunning)
@@ -81,6 +69,27 @@ public class PathFinding : MonoBehaviour
 	}
 
 	#region Path Finding Specific Methods
+
+	/// <summary>
+	/// Start the calculation of the path
+	/// </summary>
+	private void StartPathCalculation()
+	{
+		_playerPos = _mapEditor.Player.transform.position;
+		_goalPos = _mapEditor.Goal.transform.position;
+		
+		if(_threadRunning)
+		{
+			_killThread = true;
+		}
+		_pathFindingThread = new Thread(CalculatePath);
+		_pathFindingThread.Start();
+
+		_uiHandler.UpdateStatus("Calculating, lastTime: " + _timeTaken + "ms");
+		_timeStarted = Time.time * 1000;
+		_timerRunning = true;
+	}
+
 	/// <summary>
 	/// Calcuates path from player to goal
 	/// Returns the path as an array of Nodes
