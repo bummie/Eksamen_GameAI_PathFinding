@@ -65,7 +65,6 @@ public class PathFinding : MonoBehaviour
 			}
 			_pathFindingThread = new Thread(CalculatePath);
 			_pathFindingThread.Start();
-			//TODO: Terminate thread if already running or wait til finished before new thread
 		}
 	}
 
@@ -103,6 +102,7 @@ public class PathFinding : MonoBehaviour
 			}
 
 			Thread.Sleep(PathFindingDelay);
+			
 			currentNodeIndex = FindBestScoringNode(_outerNodes);
 			_innerNodes.Add(_outerNodes[currentNodeIndex]);
 			_outerNodes.RemoveAt(currentNodeIndex);
@@ -112,7 +112,7 @@ public class PathFinding : MonoBehaviour
 			if(currentNode.Tile == goalTile)
 			{
 				_pathFound = true;
-				break; // Found path
+				break;
 			}
 
 			Node[] currentNodeNeighbours = FetchNeighbours(currentNode);
@@ -126,7 +126,6 @@ public class PathFinding : MonoBehaviour
 				if(outerNode.MoveCost <= (newCost))
 				{ continue; }
 
-				Debug.Log("Neighbour is better parent yo");
 				outerNode.Parent = currentNode;
 				outerNode.MoveCost = newCost;
 			}
