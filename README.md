@@ -1,8 +1,5 @@
-# upm-package-template-3DLegacy
-Project Template for 3D scenes not using a SRP and empty
+# A* Path Finding in Unity
 
-This template uses Unity’s built in rendering pipeline and contain no content by default. This is a good starting point for developers looking to create 3D projects.
+Made as exam 2018
 
-
-Package Name: com.unity.template.3dempty
-Package Version: 0.0.2
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/WYDfNpqdEvk/0.jpg)](https://www.youtube.com/watch?v=WYDfNpqdEvk)
